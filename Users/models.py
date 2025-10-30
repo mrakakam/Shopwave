@@ -29,3 +29,42 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+
+class SellerProfile(models.Model):
+   KYC_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
+
+user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='seller_profile'
+)
+
+business_name = models.CharField(_('business name'), blank=True,  max_length=255, null=True)
+business_address = models.TextField(  null=True)
+business_phone_number = models.CharField(, max_length=20, blank=True, null=True)
+business_address = models.TextField( blank=True)
+verified= models.BooleanField(_('verified'), default=False)
+kyc_status = models.CharField(
+        max_length=20,
+        choices=KYC_STATUS_CHOICES,
+        default='pending'
+    )
+
+    kyc_documents = models.JSONField(default=dict, blank=True)
+    payoutinfo = models.JSONField(default=dict, blank=True)
+    created_at = models.DateTimeField(_('created at'), auto_now_add=True)
+    updated_at = models.DateTimeField(_('updated at'), auto_now=True)
+
+
+    class Meta:
+        db_table = 'seller_profile'
+
+    def __str__(self):
+        return f" {self.user.email} - {self.business_name}"
+
+    
