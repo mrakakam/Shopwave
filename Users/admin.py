@@ -35,3 +35,16 @@ class CustmerAdmin(UserAdmin):
         search_fields = ('user_email', 'business_name')
         list_filter = ('verified', 'kyc_status')
         readonly_fields = ('created_at', 'updated_at')
+
+
+    @admin.register(UserProfile)
+    class UserProfileAdmin(admin.ModelAdmin):
+        List_display = ('user', 'preferred_currency',  'created_at')
+        search_fields = ('user__email',)
+
+    
+    @admin.register(Address)
+    class AddressAdmin(admin.ModelAdmin):
+        List_display = ('user', 'street_address', 'city',  'country',  'is_default', 'address_type')
+        list_filter = ('is_default', 'country' , 'address_type')
+        readonly_fields = ('street_address', 'city', 'user__email')
