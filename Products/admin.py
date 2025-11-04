@@ -38,3 +38,20 @@ class ProductImageAdmin(admin.ModelAdmin):
     search_fields = ('product__title',)
     
 
+@admin.register(ProuctVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    list_display = ('product', 'sku', 'price', 'created_at', 'stock')
+    search_fields = ('title', 'sku')
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    search_fields = ('name',)
+    prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(ProductTag)
+class ProductTagAdmin(admin.ModelAdmin):
+    list_display = ('product', 'tag')
+    list_filter = ('tag')
+    search_fields = ('product__title', 'tag__name')
