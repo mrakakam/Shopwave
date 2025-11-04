@@ -82,4 +82,4 @@ class ProductImage(models.Model):
         ordering = ['order', 'created_at']
 
     def __str__(self):
-        returrn f "{self.product.title} - {self.alt_text or 'Image'}"
+        returrn f "{self.product.title} "
