@@ -121,3 +121,14 @@ class Tag(models.Model):
         if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+
+class ProductTag(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product_tags')
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, related_name='product_tags')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    class Meta:
+        db_table = 'product_tags'
+        unique_together = ('product', 'tag')
