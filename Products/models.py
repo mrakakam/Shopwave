@@ -87,7 +87,7 @@ class ProductImage(models.Model):
 
 class ProductVariant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
-    sku = models.CharField(max_length=100, unique=True)
+    sku = models.CharField(max_length=100, unique=True) # Stock Keeping Unit
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(default=0)
     attributes = models.JSONField(null=True, blank=True)
@@ -100,4 +100,24 @@ class ProductVariant(models.Model):
        
 
     def __str__(self):
+    
         return f"{self.product.title} - {self.attributes}"
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+    class Meta:
+        db_table  = 'tags'
+        ordering = ['name']
+
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
