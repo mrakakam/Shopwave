@@ -29,3 +29,12 @@ class ProductAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at', 'updated_at')
     inlines = [ProductImageInline, ProductVariantInline]
 
+
+@admin.register(ProductImage)
+
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ('product', 'image', 'is_primary', 'other')
+    list_filter = ('is_primary',)
+    search_fields = ('product__title',)
+    
+
