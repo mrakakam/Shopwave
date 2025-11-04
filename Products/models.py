@@ -67,3 +67,19 @@ class Product(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+class ProductImage(models.Model):
+    product = models.FoereignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='product_images/')
+    alt_text = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    order = models.IntegerField(default=0)
+    is_primary = models.BooleanField(default=False)
+
+
+    class Meta:
+        db_table = 'product_images'
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        returrn f "{self.product.title} - {self.alt_text or 'Image'}"
