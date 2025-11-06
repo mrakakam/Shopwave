@@ -41,7 +41,7 @@ class ProductImageAdmin(admin.ModelAdmin):
 @admin.register(ProuctVariant)
 class ProductVariantAdmin(admin.ModelAdmin):
     list_display = ('product', 'sku', 'price', 'created_at', 'stock')
-    search_fields = ('title', 'sku')
+    search_fields = ('title', 'sku') 
 
 
 @admin.register(Tag)
@@ -55,3 +55,5 @@ class ProductTagAdmin(admin.ModelAdmin):
     list_display = ('product', 'tag')
     list_filter = ('tag')
     search_fields = ('product__title', 'tag__name')
+
+
