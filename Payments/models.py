@@ -42,7 +42,7 @@ class Payment(models.Model):
     
 class Refund(models.Model):
 
-    REFUND_STATUS_CHOICES = [
+    STATUS_CHOICES = [
         ('requested', 'Requested'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
@@ -68,3 +68,18 @@ class Refund(models.Model):
 
     def __str__(self):
         return f'Refund #{self.id} for Payment #{self.Payment.id}'
+    
+
+class Payout(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('Processing', 'Processing'),
+        ('cancelled', 'Cancelled'),
+        ('Processed', 'Processed'),
+
+    ]
+
+    
