@@ -82,7 +82,7 @@ class ProductImage(models.Model):
         ordering = ['order', 'created_at']
 
     def __str__(self):
-        returrn f "{self.product.title} "
+        return f"{self.product.title}"
 
 
 class ProductVariant(models.Model):
