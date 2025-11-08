@@ -9,11 +9,11 @@ class User(AbstractUser):
 
     # User type
     is_seller = models.BooleanField (_('is seller'), default=False)
-    is_buyer = models.BooleanField (_('is buyer'), default==True)
+    is_buyer = models.BooleanField (_('is buyer'), default=True)
 
     # Verification fields
     email_verified = models.BooleanField (_('email verified') , default=False)
-     email_verified = models.BooleanField (_('phone verified') , default=False)
+    email_verified = models.BooleanField (_('phone verified') , default=False)
 
     # Auto timestamps
     created_at = models.DateTimeField(_('created at') , auto_now_add=True)
@@ -24,7 +24,7 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-   class Meta:
+    class Meta:
         db_table = 'user'
 
     def __str__(self):
@@ -32,28 +32,28 @@ class User(AbstractUser):
 
 
 class SellerProfile(models.Model):
-   KYC_STATUS_CHOICES = [
+    KYC_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ]
 
-user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='seller_profile'
-)
-
-business_name = models.CharField(_('business name'), blank=True,  max_length=255, null=True)
-business_address = models.TextField(  null=True)
-business_phone_number = models.CharField(, max_length=20, blank=True, null=True)
-business_address = models.TextField( blank=True)
-verified= models.BooleanField(_('verified'), default=False)
-kyc_status = models.CharField(
-        max_length=20,
-        choices=KYC_STATUS_CHOICES,
-        default='pending'
+    user = models.OneToOneField(
+            User,
+            on_delete=models.CASCADE,
+            related_name='seller_profile'
     )
+
+    business_name = models.CharField(_('business name'), blank=True,  max_length=255, null=True)
+    business_address = models.TextField(  null=True)
+    business_phone_number = models.CharField(_('business phone'),max_length=20, blank=True, null=True)
+    business_address = models.TextField( blank=True)
+    verified= models.BooleanField(_('verified'), default=False)
+    kyc_status = models.CharField(
+            max_length=20,
+            choices=KYC_STATUS_CHOICES,
+            default='pending'
+        )
 
     kyc_documents = models.JSONField(default=dict, blank=True)
     payoutinfo = models.JSONField(default=dict, blank=True)
@@ -67,8 +67,8 @@ kyc_status = models.CharField(
     def __str__(self):
         return f" {self.user.email} - {self.business_name}"
 
-    class  Address(models.Model):
-        ADDReSS_TYPE_CHOICES = [
+class  Address(models.Model):
+    ADDRESS_TYPE_CHOICES = [
         ('shipping', 'Shipping'),
         ('billing', 'Billing'),
         ('both', 'Both'),
@@ -82,7 +82,7 @@ kyc_status = models.CharField(
 
     address_type = models.CharField(
         max_length=20,
-        choices=ADDReSS_TYPE_CHOICES,
+        choices=ADDRESS_TYPE_CHOICES,
         default='shipping'
     )
 

@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from users.models import User, SellerProfiler
+from users.models import User, SellerProfile
 from orders.models import Order
 
 
@@ -52,12 +52,12 @@ class Refund(models.Model):
     Payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name='refunds')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='refunds')
     amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
-    staus = models.CharField(max_length=20, choices=REFUND_STATUS_CHOICES, default='requested')
+    staus = models.CharField(max_length=20, choices=STATUS_CHOICES, default='requested')
     reason = models.JSONField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     provider_refund_id = models.CharField(max_length=255, blank=True, null=True)
-    processed_by = models.ForeignKey(SellerProfiler, on_delete=models.SET_NULL, null=True, blank=True, related_name='processed_refunds')
+    processed_by = models.ForeignKey(User  , on_delete=models.SET_NULL, null=True, blank=True, related_name='processed_refunds')
     processed_at = models.DateTimeField(blank=True, null=True)
 
 
@@ -82,7 +82,7 @@ class Payout(models.Model):
 
     ]
 
-    seller = models.ForeignKey(SellerProfiler, on_delete=models.CASCADE, related_name='payouts')
+    seller = models.ForeignKey(SellerProfile, on_delete=models.CASCADE, related_name='payouts')
     amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
     currency = models.CharField(max_length=3, default='NGN')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -101,3 +101,31 @@ class Payout(models.Model):
     
     def __str__(self):
         return f'Payout #{self.id} for Seller #{self.seller.id}'
+    
+
+class Transaction(models.Model):
+
+    TYPE_CHOICES = [
+        ('refund', 'Refund'),
+        ('payout', 'Payout'),
+        ('sale', 'Sale'),
+        ('fee', 'Fee'),
+    ]
+
+    Payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name='transactions', )
+    Payout = models.ForeignKey(Payout, on_delete=models.CASCADE, related_name='transactions',)
+    Transaction_type = models.CharField(max_length=20, choices=TYPE_CHOICES , default='sale')
+    amount = models.DecimalField(max_digits=10, decimal_places=2 , validators=[MinValueValidator(0.01)])
+    currency = models.CharField(max_length=3, default='NGN')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    payment_method = models.CharField(max_length=20, choices= Payment.PAYMENT_METHOD_CHOICES, default='card')
+    metadata = models.JSONField(blank=True, null=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        db_table = 'transactions'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'Transaction #{self.id} for Payment {self.Payment.id}'
