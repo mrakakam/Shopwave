@@ -49,6 +49,22 @@ class Refund(models.Model):
         ('processed', 'Processed'),
     ]
 
-    
+    Payment = models.ForeignKey(Payment, on_delete=models.CASCADE, related_name='refunds')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='refunds')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
+    staus = models.CharField(max_length=20, choices=REFUND_STATUS_CHOICES, default='requested')
+    reason = models.JSONField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    provider_refund_id = models.CharField(max_length=255, blank=True, null=True)
+    processed_by = models.ForeignKey(SellerProfiler, on_delete=models.SET_NULL, null=True, blank=True, related_name='processed_refunds')
+    processed_at = models.DateTimeField(blank=True, null=True)
 
-   
+
+    class Meta:
+        db_table = 'refunds'
+        ordering = ['-created_at']
+
+
+    def __str__(self):
+        return f'Refund #{self.id} for Payment #{self.Payment.id}'
