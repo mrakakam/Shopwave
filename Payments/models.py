@@ -82,4 +82,22 @@ class Payout(models.Model):
 
     ]
 
+    seller = models.ForeignKey(SellerProfiler, on_delete=models.CASCADE, related_name='payouts')
+    amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
+    currency = models.CharField(max_length=3, default='NGN')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    provider_at_payout_id = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    payment_details = models.JSONField(blank=True, null=True)
+    payment_method = models.CharField(max_length=20, choices= Payment.PAYMENT_METHOD_CHOICES, blank=True, null=True)
+    processed_at = models.DateTimeField(blank=True, null=True)
+
+
+    class Meta:
+        db_table = 'payouts'
+        ordering = ['-created_at']
+
     
+    def __str__(self):
+        return f'Payout #{self.id} for Seller #{self.seller.id}'
